@@ -1,0 +1,63 @@
+:root {
+  --color-primary: #526044;
+  --color-primary-hover: #414d35;
+  --color-primary-light: #e8ebdd;
+
+  --color-background: #f6f4ed;
+  --color-surface: #fffdf9;
+  --color-surface-secondary: #e9e2d6;
+
+  --color-text-primary: #282d23;
+  --color-text-secondary: #64695d;
+  --color-text-muted: #85877d;
+  --color-border: #dad8cc;
+
+  --font-heading: "DM Serif Display", Georgia, serif;
+  --font-body: "Inter", Arial, sans-serif;
+  --font-arabic: "IBM Plex Sans Arabic", "Noto Sans Arabic", sans-serif;
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-hero: clamp(2.5rem, 5vw, 4.5rem);
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
+
+  --container-max-width: 75rem;
+  --container-padding: clamp(1rem, 4vw, 3rem);
+  --header-height: 4.5rem;
+  --sidebar-width: 16rem;
+
+  --border-width: 1px;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.25rem;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 3px rgb(40 45 35 / 5%);
+  --shadow-md: 0 4px 12px rgb(40 45 35 / 7%);
+
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+}

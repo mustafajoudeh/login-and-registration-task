@@ -1,0 +1,75 @@
+body {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  background-color: var(--color-background);
+}
+
+.div-container {
+  display: grid;
+  background-color: var(--color-surface);
+  margin: var(--spacing-8) auto;
+
+  width: calc(100% - 2 * var(--container-padding));
+  max-width: 28rem;
+
+  border: var(--border-width) solid var(--color-surface-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-8);
+
+  box-sizing: border-box;
+  box-shadow: var(--shadow-md);
+}
+
+h1 {
+  color: var(--color-primary);
+  text-align: center;
+  margin-bottom: var(--spacing-6);
+  font-family: var(--font-family-heading);
+}
+
+.form-label {
+  color: var(--color-text-primary);
+}
+
+.form-control {
+  background-color: var(--color-surface);
+  border-color: var(--color-surface-secondary);
+  color: var(--color-text-primary);
+}
+
+.form-control:focus {
+  border-color: var(--color-primary);
+  outline-color: var(--color-primary);
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}
+
+.btn {
+  color: var(--color-surface);
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.btn:hover {
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}
+
+.div-container p {
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-top: var(--spacing-4);
+}
