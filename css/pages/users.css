@@ -1,0 +1,171 @@
+/* ==============================
+   Users Page
+============================== */
+
+.div-container {
+  width: min(1100px, 92%);
+  margin: 60px auto;
+  padding: 32px;
+  background-color: var(--surface, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+}
+
+/* Page Heading */
+.div-container h1 {
+  margin: 0 0 24px;
+  color: var(--text, #282d23);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+/* Welcome Message */
+.div-container > p {
+  margin: 12px 0;
+  color: var(--secondary, #64695d);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* Total Users */
+.div-container > p:nth-of-type(2) {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0 24px;
+  padding: 10px 16px;
+  color: var(--primary, #526044);
+  background-color: var(--primary-light, #e8ebdd);
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+/* Users Table Wrapper */
+.div-container table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  overflow: hidden;
+  font-size: 14px;
+  text-align: left;
+}
+
+/* Table Header */
+.div-container thead {
+  background-color: var(--primary, #526044);
+  color: #ffffff;
+}
+
+.div-container th {
+  padding: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Table Cells */
+.div-container td {
+  padding: 16px;
+  color: var(--text, #282d23);
+  border-bottom: 1px solid var(--border, #e5e7eb);
+  line-height: 1.5;
+}
+
+/* Alternating Rows */
+.div-container tbody tr:nth-child(even) {
+  background-color: #fafaf7;
+}
+
+/* Hover Effect */
+.div-container tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.div-container tbody tr:hover {
+  background-color: var(--primary-light, #e8ebdd);
+}
+
+/* ID Column */
+.div-container tbody td:first-child {
+  color: var(--secondary, #64695d);
+  font-weight: 600;
+}
+
+/* Logout Link */
+.div-container > p:last-child {
+  margin-top: 28px;
+  text-align: right;
+}
+
+.div-container > p:last-child a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 20px;
+  color: #ffffff;
+  background-color: var(--primary, #526044);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.div-container > p:last-child a:hover {
+  background-color: #414d35;
+  transform: translateY(-1px);
+}
+
+.div-container > p:last-child a:focus-visible {
+  outline: 3px solid #a3b18a;
+  outline-offset: 3px;
+}
+
+/* Empty State */
+.div-container > p:only-of-type {
+  color: var(--secondary, #64695d);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .div-container {
+    width: 94%;
+    margin: 24px auto;
+    padding: 22px 16px;
+  }
+
+  .div-container h1 {
+    font-size: 25px;
+  }
+
+  .div-container table {
+    min-width: 600px;
+  }
+
+  .div-container {
+    overflow-x: auto;
+  }
+
+  .div-container th,
+  .div-container td {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .div-container {
+    padding: 18px 12px;
+  }
+
+  .div-container h1 {
+    font-size: 22px;
+  }
+
+  .div-container > p {
+    font-size: 14px;
+  }
+}

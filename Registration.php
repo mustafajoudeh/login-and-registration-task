@@ -38,6 +38,7 @@ if ($password !== $confirmPassword) {
         PASSWORD_DEFAULT
     );
     
+    
 try {
    
 

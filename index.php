@@ -1,7 +1,8 @@
 <?php
-session_start();
+
 
 require_once "db.php";
+session_start();
 
 $error = "";
 
@@ -36,12 +37,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION["username"] = $user["username"];
             $_SESSION["email"] = $user["email"];
 
-            header("Location: users.php");
+            header("Location: dashboard.php");
             exit;
 
         } else {
             $error = "Invalid email or password.";
-            echo $error;
         }
     }
 }
@@ -72,6 +72,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   <body>
     <div class="div-container">
       <h1>Login</h1>
+      <?php if ($error !== ""): ?>
+        <p class="alert alert-error" role="alert"><?= htmlspecialchars($error) ?></p>
+      <?php endif; ?>
       <form class="form-group" action="index.php" method="post">
         <label class="form-label" for="email">Email Address</label>
           <input
