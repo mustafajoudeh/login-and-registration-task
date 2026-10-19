@@ -5,6 +5,7 @@ $menuItems = [
     "dashboard.php" => "Dashboard",
     "users.php"     => "Users",
     "products.php"  => "Products",
+    "categories.php" => "Categorie"
 ];
 ?>
 <aside class="sidebar">

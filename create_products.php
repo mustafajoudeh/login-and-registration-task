@@ -1,10 +1,21 @@
 <?php
 require_once "db.php";
 session_start();
+try{
+   $sql = "SELECT `CategorieID`, `CategorieName` FROM `categories`";
+
+    $catStmt = $pdo->query($sql); 
+    $categories = $catStmt->fetchAll(PDO::FETCH_ASSOC);
+}
+catch(PDOException $e)
+{
+  exit($e);
+}
 
 if($_SERVER["REQUEST_METHOD"] === "POST")
 {
     $ProductName = trim($_POST["product_name"]??"");
+    $CategorieID = $_POST["categorie_id"]??"";
     $Description = trim($_POST["description"]??"");
     $Price = $_POST["price"] ?? 0.0;
     $Quantity =$_POST["quantity"]??0;
@@ -23,14 +34,15 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
     }
 
 try{
-    $sql = "INSERT INTO `product`( `Product name`, `Description`, `Price`
+    $sql = "INSERT INTO `product`( `Product name`,`CategorieID` ,`Description`, `Price`
     , `Quantity`, `Created date`) 
-    VALUES (:ProductName,:Description,:Price,:Quantity,:CreatedDate)";
+    VALUES (:ProductName,:CategorieID,:Description,:Price,:Quantity,:CreatedDate)";
 
     $stmt = $pdo->prepare($sql);
 
     $stmt->execute([
         "ProductName" => $ProductName,
+        "CategorieID" =>(int)$CategorieID,
         "Description" => $Description,
         "Price" => $Price,
         "Quantity" => $Quantity,
@@ -56,7 +68,7 @@ catch(PDOException $e)
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Add New Product | Jordan Smart Travel</title>
+    
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -77,7 +89,6 @@ catch(PDOException $e)
       <a class="back-link" href="products.php"> &larr; Back to Products </a>
 
       <header class="registration-header">
-        <span class="brand-label">JORDAN SMART TRAVEL</span>
         <h1>Add New Product</h1>
         <p>Fill in the information below to add a new product.</p>
       </header>
@@ -94,6 +105,19 @@ catch(PDOException $e)
             required
           />
         </div>
+
+        <div class="form-group">
+        <label class="form-label" for="categorie">Choose a categorie :</label>
+        <select name="categorie_id" id="categorie_id" class="form-control">
+          <option value="">--Please choose an option--</option>
+          <?php foreach($categories as $categorie) :?>
+            <option value=<?= (string)htmlspecialchars($categorie["CategorieID"])?>>
+              <?= htmlspecialchars($categorie["CategorieName"])?></option>
+
+          <?php endforeach;?>
+          
+        </select>
+      </div>
 
         <div class="form-group">
           <label class="form-label" for="description">Description</label>

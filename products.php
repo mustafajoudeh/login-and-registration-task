@@ -9,8 +9,16 @@ if (!isset($_SESSION["id"])) {
 }
 
 
-$sql = "SELECT `id`, `Product name`, `Description`, `Price`, `Quantity`, `Created date` 
-FROM `product`";
+$sql = "SELECT 
+    p.`id`, 
+    c.`CategorieName` AS `Categorie`, 
+    p.`Product name`, 
+    p.`Description`, 
+    p.`Price`, 
+    p.`Quantity`, 
+    p.`Created date` 
+FROM `product` p
+INNER JOIN `categories` c ON p.`CategorieID` = c.`CategorieID`;";
 
 $stmt = $pdo->query($sql);
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -63,6 +71,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <thead>
           <tr>
             <th>Product Name</th>
+            <th>Categorie</th>
             <th>Description</th>
             <th>Price</th>
             <th>Quantity</th>
@@ -75,6 +84,8 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <?php foreach ($products as $product): ?>
           <tr>
             <td><?= htmlspecialchars((string)$product["Product name"]) ?></td>
+
+            <td><?=htmlspecialchars((string)$product["Categorie"])?></td>
 
             <td><?= htmlspecialchars((string)$product["Description"]) ?></td>
 
