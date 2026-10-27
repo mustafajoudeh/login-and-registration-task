@@ -32,7 +32,7 @@ try {
     }
 
     // Prevent deleting categories that have products
-    if ($CategorieModule->HasProducts($id)) {
+    if ($CategorieModule->GetCategorieById($id)) {
         header("Location: categories.php?error=category_in_use");
         exit;
     }

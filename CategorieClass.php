@@ -35,26 +35,23 @@ class Categorie
         foreach ($rows as $row) {
             $categories[] = new self(
                 $this->pdo,
-                (int) $row['CategorieID'],
-                $row['CategorieName']
+                (int) $row["CategorieID"],
+                $row["CategorieName"]
             );
         }
 
         return $categories;
     }
 
-    // READ: Get one categories by ID
+    // READ: Get one category by ID
     public function GetCategorieById(int $id): ?self
     {
         $sql = "SELECT CategorieID, CategorieName
                 FROM categories
-                WHERE CategorieID = :CategorieID";
+                WHERE CategorieID = :id";
 
         $stmt = $this->pdo->prepare($sql);
-
-        $stmt->execute([
-            'CategorieID' => $id
-        ]);
+        $stmt->execute(["id" => $id]);
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -64,89 +61,124 @@ class Categorie
 
         return new self(
             $this->pdo,
-            (int) $row['CategorieID'],
-            $row['CategorieName']
+            (int) $row["CategorieID"],
+            $row["CategorieName"]
         );
     }
 
-   public function GetCategorieNameById(int $id): ?string
-{
-    $sql = "SELECT CategorieName
-            FROM categories
-            WHERE CategorieID = :CategorieID";
+    // READ: Get category name by ID
+    public function GetCategorieNameById(int $id): ?string
+    {
+        $sql = "SELECT CategorieName
+                FROM categories
+                WHERE CategorieID = :id";
 
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([
-        'CategorieID' => $id
-    ]);
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(["id" => $id]);
 
-    $result = $stmt->fetchColumn();
+        $name = $stmt->fetchColumn();
 
-    return $result !== false ? (string) $result : null;
-}
+        return $name !== false ? (string) $name : null;
+    }
 
-    // CREATE: Add a new categories
+    // Check whether a category name already exists
+    public function CategorieNameExists(
+        string $name,
+        ?int $excludeId = null
+    ): bool {
+        if ($excludeId !== null) {
+            $sql = "SELECT COUNT(*)
+                    FROM categories
+                    WHERE CategorieName = :name
+                    AND CategorieID <> :id";
+
+            $stmt = $this->pdo->prepare($sql);
+
+            $stmt->execute([
+                "name" => trim($name),
+                "id" => $excludeId
+            ]);
+        } else {
+            $sql = "SELECT COUNT(*)
+                    FROM categories
+                    WHERE CategorieName = :name";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(["name" => trim($name)]);
+        }
+
+        return (int) $stmt->fetchColumn() > 0;
+    }
+
+    // CREATE: Add category
     public function CreateCategorie(string $CategorieName): int
     {
         $CategorieName = trim($CategorieName);
 
-        if ($CategorieName === '') {
+        if ($CategorieName === "") {
             throw new InvalidArgumentException(
-                'categories name cannot be empty.'
+                "Category name is required."
             );
         }
 
         $sql = "INSERT INTO categories (CategorieName)
-                VALUES (:CategorieName)";
+                VALUES (:name)";
 
         $stmt = $this->pdo->prepare($sql);
-
-        $stmt->execute([
-            'CategorieName' => $CategorieName
-        ]);
+        $stmt->execute(["name" => $CategorieName]);
 
         return (int) $this->pdo->lastInsertId();
     }
 
-    // UPDATE: Change categories name
+    // UPDATE: Update category name
     public function UpdateCategorie(
         int $id,
         string $CategorieName
     ): int {
         $CategorieName = trim($CategorieName);
 
-        if ($CategorieName === '') {
+        if ($CategorieName === "") {
             throw new InvalidArgumentException(
-                'categories name cannot be empty.'
+                "Category name is required."
             );
         }
 
         $sql = "UPDATE categories
-                SET CategorieName = :CategorieName
-                WHERE CategorieID = :CategorieID";
+                SET CategorieName = :name
+                WHERE CategorieID = :id";
 
         $stmt = $this->pdo->prepare($sql);
 
         $stmt->execute([
-            'CategorieName' => $CategorieName,
-            'CategorieID' => $id
+            "name" => $CategorieName,
+            "id" => $id
         ]);
 
         return $stmt->rowCount();
     }
 
-    // DELETE: Remove a categories
-    public function DeleteCategorie(int $id): bool
+    // Check whether products use this category
+    public function HasProducts(int $id): bool
     {
-        $sql = "DELETE FROM categories
-                WHERE CategorieID = :CategorieID";
+        $sql = "SELECT COUNT(*)
+                FROM product
+                WHERE CategorieID = :id";
 
         $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(["id" => $id]);
 
-        $stmt->execute([
-            'CategorieID' => $id
-        ]);
+        return (int) $stmt->fetchColumn() > 0;
+    }
 
-        return true;
+    // DELETE: Delete category
+    public function DeleteCategorie(int $id): int
+    {
+        $sql = "DELETE FROM categories
+                WHERE CategorieID = :id";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(["id" => $id]);
+
+        return $stmt->rowCount();
     }
 }
