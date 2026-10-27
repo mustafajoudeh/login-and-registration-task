@@ -1,7 +1,7 @@
-
 <?php
 
-require_once "db.php";
+require_once __DIR__ . "/db.php";
+require_once __DIR__ . "/CategorieClass.php";
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
@@ -12,52 +12,43 @@ if (!isset($_SESSION["id"])) {
     exit;
 }
 
-// Get category ID
-$id = filter_input(INPUT_GET, "id", FILTER_VALIDATE_INT);
+// The categories table sends the ID using POST
+$id = filter_input(INPUT_POST, "id", FILTER_VALIDATE_INT);
 
 if (!$id || $id <= 0) {
     header("Location: categories.php?error=invalid_id");
     exit;
 }
 
+$CategorieModule = new Categorie($pdo);
+
 try {
-    // Check whether category exists
-    $sql = "SELECT COUNT(*)
-            FROM `categories`
-            WHERE `CategorieID` = :id";
+    // Check whether the category exists
+    $categorie = $CategorieModule->GetCategorieById($id);
 
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(["id" => $id]);
-
-    if ($stmt->fetchColumn() == 0) {
+    if ($categorie === null) {
         header("Location: categories.php?error=not_found");
         exit;
     }
 
-    // Check whether products use this category
-    $sql = "SELECT COUNT(*)
-            FROM `product`
-            WHERE `CategorieID` = :id";
-
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(["id" => $id]);
-
-    if ($stmt->fetchColumn() > 0) {
+    // Prevent deleting categories that have products
+    if ($CategorieModule->HasProducts($id)) {
         header("Location: categories.php?error=category_in_use");
         exit;
     }
 
-    // Delete category
-    $sql = "DELETE FROM `categories`
-            WHERE `CategorieID` = :id";
+    // Delete the category
+    $deletedRows = $CategorieModule->DeleteCategorie($id);
 
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(["id" => $id]);
+    if ($deletedRows === 0) {
+        header("Location: categories.php?error=not_found");
+        exit;
+    }
 
     header("Location: categories.php?success=deleted");
     exit;
 
-} catch (PDOException $e) {
+} catch (Throwable $e) {
     error_log($e->getMessage());
 
     header("Location: categories.php?error=delete_failed");

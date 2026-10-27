@@ -1,8 +1,7 @@
-
 <?php
 
 require_once "db.php";
-
+require_once"ProductsClass.php";
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
@@ -25,12 +24,10 @@ if (!$id || $id <= 0) {
 }
 
 try {
-    $sql = "DELETE FROM `product` WHERE id = :id";
+    $ProductModel = new Products($pdo);
+    $product = $ProductModel->DeleteProduct($id);
 
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(["id" => $id]);
-
-    if ($stmt->rowCount() === 0) {
+    if (!$product) {
         header("Location: products.php?error=not_found");
         exit;
     }

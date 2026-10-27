@@ -1,6 +1,7 @@
 <?php
 
 require_once "db.php";
+require_once "UsersClass.php";
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
@@ -35,21 +36,21 @@ if ($id === (int) $_SESSION["id"]) {
 }
 
 try {
+
+     $userModle = new User($pdo);
+     $user = $userModle->GetUser($id);
     // Check if the user exists
     $sql = "SELECT id FROM `user` WHERE id = :id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(["id" => $id]);
 
-    if (!$stmt->fetch(PDO::FETCH_ASSOC)) {
+    if (!$user) {
         header("Location: users.php?error=user_not_found");
         exit;
     }
 
     // Delete the user
-    $sql = "DELETE FROM `user` WHERE id = :id";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(["id" => $id]);
-
+    $user->DeleteUser($id);
     header("Location: users.php?success=deleted");
     exit;
 
@@ -59,4 +60,3 @@ try {
     header("Location: users.php?error=delete_failed");
     exit;
 }
-

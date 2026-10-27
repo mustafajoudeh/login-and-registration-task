@@ -1,7 +1,7 @@
-
 <?php
 
 require_once "db.php";
+require_once "CategorieClass.php";
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
@@ -26,28 +26,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if (empty($errors)) {
         try {
-            // Check whether the category already exists
-            $sql = "SELECT COUNT(*)
-                    FROM `categories`
-                    WHERE `CategorieName` = :name";
-
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute(["name" => $categorieName]);
-
-            if ($stmt->fetchColumn() > 0) {
-                $errors[] = "This category already exists.";
-            } else {
-
-                // Insert new category
-                $sql = "INSERT INTO `categories` (`CategorieName`)
-                        VALUES (:name)";
-
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute(["name" => $categorieName]);
+           $CategorieModule = new Categorie($pdo);
+           $categorie = $CategorieModule->CreateCategorie($categorieName);
 
                 header("Location: categories.php?success=created");
                 exit;
-            }
+            
 
         } catch (PDOException $e) {
             error_log($e->getMessage());
@@ -68,6 +52,7 @@ function e($value): string
 
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -77,8 +62,7 @@ function e($value): string
 
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
+        rel="stylesheet">
 
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/global.css">
@@ -88,57 +72,43 @@ function e($value): string
 
 <body>
 
-<main class="registration-card">
+    <main class="registration-card">
 
-    <a class="back-link" href="categories.php">
-        &larr; Back to Categories
-    </a>
+        <a class="back-link" href="categories.php">
+            &larr; Back to Categories
+        </a>
 
-    <header class="registration-header">
-        <span class="brand-label">JORDAN SMART TRAVEL</span>
-        <h1>Add New Category</h1>
-        <p>Enter a name for the new category.</p>
-    </header>
+        <header class="registration-header">
+            <span class="brand-label">JORDAN SMART TRAVEL</span>
+            <h1>Add New Category</h1>
+            <p>Enter a name for the new category.</p>
+        </header>
 
-    <?php foreach ($errors as $error): ?>
+        <?php foreach ($errors as $error): ?>
         <p class="alert alert-error" role="alert">
             <?= e($error) ?>
         </p>
-    <?php endforeach; ?>
+        <?php endforeach; ?>
 
-    <form
-        action="create_categories.php"
-        method="POST"
-        class="registration-form"
-    >
+        <form action="create_categories.php" method="POST" class="registration-form">
 
-        <div class="form-group">
-            <label class="form-label" for="categorie_name">
-                Category Name
-            </label>
+            <div class="form-group">
+                <label class="form-label" for="categorie_name">
+                    Category Name
+                </label>
 
-            <input
-                class="form-control"
-                type="text"
-                id="categorie_name"
-                name="categorie_name"
-                placeholder="Enter category name"
-                value="<?= e($categorieName) ?>"
-                maxlength="100"
-                required
-            >
-        </div>
+                <input class="form-control" type="text" id="categorie_name" name="categorie_name"
+                    placeholder="Enter category name" value="<?= e($categorieName) ?>" maxlength="100" required>
+            </div>
 
-        <button
-            type="submit"
-            class="btn btn-primary register-btn"
-        >
-            Add Category
-        </button>
+            <button type="submit" class="btn btn-primary register-btn">
+                Add Category
+            </button>
 
-    </form>
+        </form>
 
-</main>
+    </main>
 
 </body>
+
 </html>

@@ -1,6 +1,6 @@
-
 <?php
 require_once "db.php";
+require_once "UsersClass.php";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $fullName = trim($_POST["fullName"] ?? "");
@@ -41,21 +41,9 @@ if ($password !== $confirmPassword) {
     
 try {
    
-
-    // Insert user data into the database
-    $sql = "INSERT INTO `user`
-            (`fullName`, `username`, `password`, `email`)
-            VALUES
-            (:fullName, :username, :password, :email)";
-
-    $stmt = $pdo->prepare($sql);
-
-    $stmt->execute([
-        "fullName" => $fullName,
-        "username" => $username,
-        "password" => $passwordHash,
-        "email" => $email
-    ]);
+$userModel = new User($pdo);
+$userModel->CreateUser($fullName, $username, $email, $passwordHash);
+    
 
     header("Location: users.php");
             exit;
@@ -74,11 +62,12 @@ try {
 }
 
 
-?> 
+?>
 
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -88,111 +77,74 @@ try {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
     <link
-      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
 
     <link rel="stylesheet" href="css/variables.css" />
     <link rel="stylesheet" href="css/global.css" />
     <link rel="stylesheet" href="css/components.css" />
     <link rel="stylesheet" href="css/pages/Registration.css" />
-  </head>
+</head>
 
-  <body>
+<body>
     <main class="registration-card">
-      <a class="back-link" href="users.php"> &larr; Back to Home </a>
+        <a class="back-link" href="users.php"> &larr; Back to Home </a>
 
-      <header class="registration-header">
-        <span class="brand-label">JORDAN SMART TRAVEL</span>
-        <h1>Create user Account</h1>
-        <p>Start discovering Jordan Your way.</p>
-      </header>
+        <header class="registration-header">
+            <span class="brand-label">JORDAN SMART TRAVEL</span>
+            <h1>Create user Account</h1>
+            <p>Start discovering Jordan Your way.</p>
+        </header>
 
-      <form action="create_user.php" method="post" class="registration-form">
-        <div class="form-group">
-          <label class="form-label" for="fullName">Full Name</label>
-          <input
-            class="form-control"
-            type="text"
-            id="fullName"
-            name="fullName"
-            placeholder="Enter user full name"
-            autocomplete="name"
-            required
-          />
-        </div>
+        <form action="create_user.php" method="post" class="registration-form">
+            <div class="form-group">
+                <label class="form-label" for="fullName">Full Name</label>
+                <input class="form-control" type="text" id="fullName" name="fullName" placeholder="Enter user full name"
+                    autocomplete="name" required />
+            </div>
 
-        <div class="form-group">
-          <label class="form-label" for="email">Email Address</label>
-          <input
-            class="form-control"
-            type="email"
-            id="email"
-            name="email"
-            placeholder="you@example.com"
-            autocomplete="email"
-            required
-          />
-        </div>
+            <div class="form-group">
+                <label class="form-label" for="email">Email Address</label>
+                <input class="form-control" type="email" id="email" name="email" placeholder="you@example.com"
+                    autocomplete="email" required />
+            </div>
 
-        <div class="form-group">
-          <label class="form-label" for="username">Username</label>
-          <input
-            class="form-control"
-            type="text"
-            id="username"
-            name="username"
-            placeholder="Choose a username"
-            autocomplete="username"
-            required
-          />
-        </div>
+            <div class="form-group">
+                <label class="form-label" for="username">Username</label>
+                <input class="form-control" type="text" id="username" name="username" placeholder="Choose a username"
+                    autocomplete="username" required />
+            </div>
 
-        <div class="form-group">
-          <label class="form-label" for="password">Password</label>
-          <input
-            class="form-control"
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Create a password"
-            autocomplete="new-password"
-            minlength="8"
-            required
-          />
-          <small class="field-hint"> Use at least 8 characters. </small>
-        </div>
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <input class="form-control" type="password" id="password" name="password"
+                    placeholder="Create a password" autocomplete="new-password" minlength="8" required />
+                <small class="field-hint"> Use at least 8 characters. </small>
+            </div>
 
-        <div class="form-group">
-          <label class="form-label" for="confirmPassword">
-            Confirm Password
-          </label>
-          <input
-            class="form-control"
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            placeholder="Enter user password again"
-            autocomplete="new-password"
-            minlength="8"
-            required
-          />
-        </div>
+            <div class="form-group">
+                <label class="form-label" for="confirmPassword">
+                    Confirm Password
+                </label>
+                <input class="form-control" type="password" id="confirmPassword" name="confirmPassword"
+                    placeholder="Enter user password again" autocomplete="new-password" minlength="8" required />
+            </div>
 
-        <label class="terms-label" for="terms">
-          <input type="checkbox" id="terms" name="terms" required />
-          <span>
-            I agree to the <a href="#">Terms of Service</a> and
-            <a href="#">Privacy Policy</a>.
-          </span>
-        </label>
+            <label class="terms-label" for="terms">
+                <input type="checkbox" id="terms" name="terms" required />
+                <span>
+                    I agree to the <a href="#">Terms of Service</a> and
+                    <a href="#">Privacy Policy</a>.
+                </span>
+            </label>
 
-        <button type="submit" class="btn btn-primary register-btn">
-          Create Account
-        </button>
+            <button type="submit" class="btn btn-primary register-btn">
+                Create Account
+            </button>
 
-        
-      </form>
+
+        </form>
     </main>
-  </body>
+</body>
+
 </html>
